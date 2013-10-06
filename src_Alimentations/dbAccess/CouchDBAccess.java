@@ -9,4 +9,6 @@ public interface CouchDBAccess {
 	void close();
 	
 	ResultSet sendQuery(String query);
+	
+	//void createIndex(String table,String column,Class MapType);
 }
