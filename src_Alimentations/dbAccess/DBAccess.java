@@ -1,4 +1,4 @@
-package dbAccess;
+package DBAccess;
 import org.ektorp.ViewResult;
 
 
