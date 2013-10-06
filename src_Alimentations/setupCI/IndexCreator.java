@@ -1,19 +1,21 @@
 package setupCI;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import dbAccess.CouchDBAccess;
-
-import java.util.Properties;
-import java.io.*;
-
-import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
+
+import DBAccess.CouchDBAccess;
 
 public class IndexCreator {
 	public static void createIndexes() {
