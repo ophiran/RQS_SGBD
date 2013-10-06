@@ -1,5 +1,5 @@
 package dbAccess;
-import java.sql.ResultSet;
+import org.ektorp.ViewResult;
 
 
 public interface CouchDBAccess {
@@ -8,7 +8,7 @@ public interface CouchDBAccess {
 	void bindDb(String dbName);
 	void close();
 	
-	ResultSet sendQuery(String query);
+	ViewResult sendQuery(String query);
 	
 	//void createIndex(String table,String column,Class MapType);
 }

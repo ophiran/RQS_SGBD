@@ -1,9 +1,8 @@
 package dbAccess;
 
-import java.sql.ResultSet;
-
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
+import org.ektorp.ViewResult;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
@@ -32,7 +31,7 @@ public class CouchDBAccessImpl implements CouchDBAccess {
 	}
 
 	@Override
-	public ResultSet sendQuery(String query) {
+	public ViewResult sendQuery(String query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
