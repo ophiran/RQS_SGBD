@@ -47,12 +47,20 @@ public class CouchDBAccess implements DBAccess {
 			httpClient.shutdown();
 			log.log(Level.INFO,"Closed connection");
 		}
+		else {
+			log.log(Level.WARNING, "Trying to close an inexistant connection");
+		}
 	}
 
 	@Override
 	public ViewResult sendQuery(String docId, String viewName) {
-        ViewQuery query = new ViewQuery().designDocId(docId).viewName(viewName);
-		return db.queryView(query);
+		if(db != null) {
+	        ViewQuery query = new ViewQuery().designDocId(docId).viewName(viewName);
+			return db.queryView(query);
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
