@@ -43,8 +43,7 @@ public class IndexCreator {
 		
 		CouchDBAccess dataBase = new CouchDBAccess();
 		
-		dataBase.connect(dbIp, dbPort);
-		dataBase.bindDb(dbName);
+		dataBase.connect(dbIp, dbPort, dbName);
 		
 		SortedMap<Double, Set<Integer>> vote_averages = null;
 		File f = new File("vote_averages.dump");
@@ -64,7 +63,6 @@ public class IndexCreator {
             ViewResult result = dataBase.sendQuery("_design/main", "vote_average");
             List<ViewResult.Row> rows = result.getRows();
            
-            System.out.printf("%d vote_average to examine.\n", rows.size());
             for (int i = 0; i < rows.size(); i++) {
                 ViewResult.Row row = rows.get(i);
                 Integer id = Integer.valueOf(row.getValue());
@@ -89,22 +87,5 @@ public class IndexCreator {
             }
 		}
 		
-		System.out.printf("%d different ratings.\n", vote_averages.size());
-        Double low = 7.0;
-        Double high = 7.2;
-
-        SortedMap<Double, Set<Integer>> sub_ratings = vote_averages.subMap(low, high);
-        System.out.printf("%d different ratings in sub collection.\n", sub_ratings.size());
-        
-
-        Set<Integer> ids = new HashSet<Integer>();
-        int total = 0;
-        for (Set<Integer> s : sub_ratings.values()) {
-            total += s.size();
-            ids.addAll(s); // opération d'union
-        }
-
-        System.out.printf("%d elements processed.\n", total);
-        System.out.printf("%d ids in the interval [%f, %f[ .\n", ids.size(), low, high);
 	}
 }

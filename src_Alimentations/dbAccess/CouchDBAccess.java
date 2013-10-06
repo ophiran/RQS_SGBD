@@ -1,5 +1,10 @@
-package DBAccess;
+package dbAccess;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,36 +17,28 @@ import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 
-public class CouchDBAccess implements DBAccess {
+import setupCI.ApplicationInfo;
 
-	Logger log;
-	HttpClient httpClient;
-	CouchDbInstance dbInstance;
-	CouchDbConnector db;
+public class CouchDBAccess{
+
+	private Logger log;
+	private HttpClient httpClient;
+	private CouchDbInstance dbInstance;
+	private CouchDbConnector db;
 	
 	public CouchDBAccess() {
 		log = Logger.getLogger("CouchDBAccess Logger");
 	}
 	
-	@Override
-	public void connect(String ip, String port) {
+	public void connect(String ip, String port, String dbName) {
 		httpClient = new StdHttpClient.Builder().host(ip).port(Integer.parseInt(port)).build();
 		dbInstance = new StdCouchDbInstance(httpClient);
 		log.log(Level.INFO, "Connected to "  + ip + ":" + port);
+		db = new StdCouchDbConnector(dbName, dbInstance);
+		log.log(Level.INFO, "Binded to db " + dbName);
 	}
 
-	@Override
-	public void bindDb(String dbName) {
-		if(dbInstance != null){
-			db = new StdCouchDbConnector(dbName, dbInstance);
-			log.log(Level.INFO, "Binded to db " + dbName);
-		}
-		else {
-			log.log(Level.WARNING, "Binding to a non-connected DB");
-		}
-	}
 
-	@Override
 	public void close() {
 		if(httpClient != null) {
 			httpClient.shutdown();
@@ -52,7 +49,6 @@ public class CouchDBAccess implements DBAccess {
 		}
 	}
 
-	@Override
 	public ViewResult sendQuery(String docId, String viewName) {
 		if(db != null) {
 	        ViewQuery query = new ViewQuery().designDocId(docId).viewName(viewName);
@@ -63,7 +59,6 @@ public class CouchDBAccess implements DBAccess {
 		}
 	}
 
-	@Override
 	public ViewResult sendQuery(String query) {
 		return null;
 	}
