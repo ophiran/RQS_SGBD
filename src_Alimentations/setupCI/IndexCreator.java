@@ -2,7 +2,6 @@ package setupCI;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -12,7 +11,6 @@ import dbAccess.CouchDBAccess;
 import java.util.Properties;
 import java.io.*;
 
-import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 
 public class IndexCreator {
@@ -50,10 +48,8 @@ public class IndexCreator {
 		
 		SortedMap<Double, Set<Integer>> vote_averages = null;
 		File f = new File("vote_averages.dump");
-		boolean readCache = false;
 		if (f.exists()) {
 			try {
-				readCache = true;
 				FileInputStream fis = new FileInputStream(f);
 				ObjectInputStream in = new ObjectInputStream(fis);
 				vote_averages = (SortedMap<Double, Set<Integer>>) in.readObject();
