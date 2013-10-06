@@ -32,7 +32,7 @@ public class CouchDBAccess implements DBAccess {
 
 	@Override
 	public void bindDb(String dbName) {
-		if(db != null){
+		if(dbInstance != null){
 			db = new StdCouchDbConnector(dbName, dbInstance);
 			log.log(Level.INFO, "Binded to db " + dbName);
 		}
@@ -45,6 +45,7 @@ public class CouchDBAccess implements DBAccess {
 	public void close() {
 		if(httpClient != null) {
 			httpClient.shutdown();
+			log.log(Level.INFO,"Closed connection");
 		}
 	}
 
