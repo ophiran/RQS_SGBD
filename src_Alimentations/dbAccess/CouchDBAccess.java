@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 public interface CouchDBAccess {
 
 	void connect(String ip,String port);
-	void bindDb(String db);
+	void bindDb(String dbName);
 	void close();
 	
 	ResultSet sendQuery(String query);
