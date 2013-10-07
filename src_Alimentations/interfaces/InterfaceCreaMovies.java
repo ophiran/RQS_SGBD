@@ -7,8 +7,7 @@ package interfaces;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import DBAccess.CouchDBAccess;
-import DBAccess.DBAccess;
+import dbAccess.CouchDBAccess;
 
 /**
  *
