@@ -1,5 +1,6 @@
 import interfaces.InterfaceCreaMovies;
 
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +16,9 @@ public class Start {
 	public static void main(String[] args) {
 		
 		logger = Logger.getLogger("Main logger");
-		createIndexes();
+		DoubleDbCache cacheVoteAverage = new DoubleDbCache("vote_average", "vote_average");
+		cacheVoteAverage.loadIndex();
+		System.out.println(cacheVoteAverage.index.values().size());
 		
 		if(args.length > 0 && args[0].equalsIgnoreCase("-console")){
 			logger.log(Level.INFO, "Entering in console mode");

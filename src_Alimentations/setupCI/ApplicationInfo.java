@@ -58,8 +58,7 @@ public class ApplicationInfo {
 				setIp("127.0.0.1");
 				setPort("5984");
 				setDbName("movies");
-				setCacheDirPath(System.getProperty("user.home") + System.getProperty("file.separator")
-							+ "caches");
+				setCacheDirPath(System.getProperty("user.dir"));
 				dbInfo.store(new FileOutputStream(dbInfoFile), "data base informations");  
 			}
 			

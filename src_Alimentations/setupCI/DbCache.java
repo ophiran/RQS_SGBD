@@ -19,7 +19,7 @@ import org.ektorp.ViewResult;
 import dbAccess.CouchDBAccess;
 
 public abstract class DbCache {
-	protected Map<Object, Set<Integer>> index;
+	public Map<Object, Set<Integer>> index;
 	protected File dump;
 	protected ApplicationInfo dbInfo;
 	protected String viewName;
