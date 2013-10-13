@@ -5,26 +5,26 @@ import java.util.List;
 import java.util.Set;
 
 import org.ektorp.ViewResult;
+import org.ektorp.ViewResult.Row;
 
-public class DoubleDbCache extends DbCache{
+public class StringDbCache extends DbCache {
 
-	public DoubleDbCache(String cacheName, String viewName) {
+	public StringDbCache(String cacheName, String viewName) {
 		super(cacheName, viewName);
 	}
-	
+
 	@Override
-	public void insertResultsIntoIndex(List<ViewResult.Row> rows) {
-       
-        for (int i = 0; i < rows.size(); i++) {
+	public void insertResultsIntoIndex(List<Row> rows) {
+		for (int i = 0; i < rows.size(); i++) {
             ViewResult.Row row = rows.get(i);
             Integer id = Integer.valueOf(row.getValue());
-            Double rating = Double.valueOf(row.getKey());
+            String key = String.valueOf(row.getKey());
             
-            Set<Integer> ids = index.get(rating);
+            Set<Integer> ids = index.get(key);
              
             if (ids == null) {
                 ids = new HashSet<Integer>();
-                index.put(rating, ids);
+                index.put(key, ids);
             }
             
             ids.add(id);
