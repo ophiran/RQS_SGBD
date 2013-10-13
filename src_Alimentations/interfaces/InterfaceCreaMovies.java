@@ -4,10 +4,18 @@
  */
 package interfaces;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
-import dbAccess.CouchDBAccess;
+import javax.swing.JList;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataListener;
+
+import setupCI.DbCache;
 
 /**
  *
@@ -15,22 +23,28 @@ import dbAccess.CouchDBAccess;
  */
 public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionListener{
 
-	public CouchDBAccess dbAccess;
-	
+	private Vector<DbCache> indexes;
     /**
      * Creates new form InterfaceCreaMovies
      */
-    public InterfaceCreaMovies() {
+    public InterfaceCreaMovies(Vector<DbCache> indexes) {
+        this.indexes = indexes;
         initComponents();
-        dbAccess = new CouchDBAccess();
+        
+        for(DbCache db : indexes){
+        	jComboBoxIndex.addItem(db);
+        }
         
         jComboBoxIndex.addActionListener(this);
     }
 
+    
     @Override
     public void actionPerformed(ActionEvent e) {
     	if(e.getSource().equals(jComboBoxIndex)){
-    		
+    		if(jComboBoxIndex.getSelectedItem() instanceof DbCache){
+    			jListMovies.setListData(((DbCache)jComboBoxIndex.getSelectedItem()).index.entrySet().toArray());
+    		}
     	}
     }
     /**

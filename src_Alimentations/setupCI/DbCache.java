@@ -6,12 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.ektorp.ViewResult;
@@ -22,7 +19,7 @@ public abstract class DbCache {
 	public Map<Object, Set<Integer>> index;
 	protected File dump;
 	protected ApplicationInfo dbInfo;
-	protected String viewName;
+	public String viewName;
 	
 	public DbCache(String cacheName, String viewName) {
 		dbInfo = ApplicationInfo.getInstance();
@@ -80,5 +77,10 @@ public abstract class DbCache {
 	
 	public boolean cacheExists() {
 		return dump.exists();
+	}
+	
+	@Override
+	public String toString() {
+		return viewName;
 	}
 }
