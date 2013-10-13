@@ -17,6 +17,7 @@ import org.ektorp.ViewResult;
 
 import dbAccess.CouchDBAccess;
 
+@Deprecated
 public class IndexCreator {
 	public static void createIndexes() {
 		Properties dbInfo = new Properties();

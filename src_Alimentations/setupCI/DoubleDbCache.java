@@ -6,10 +6,12 @@ import java.util.Set;
 
 import org.ektorp.ViewResult;
 
+import dbAccess.CouchDBAccess;
+
 public class DoubleDbCache extends DbCache{
 
-	public DoubleDbCache(String cacheName, String viewName) {
-		super(cacheName, viewName);
+	public DoubleDbCache(String cacheName, String viewName, CouchDBAccess dbConnection) {
+		super(cacheName, viewName, dbConnection);
 	}
 	
 	@Override

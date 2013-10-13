@@ -7,10 +7,12 @@ import java.util.Set;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import dbAccess.CouchDBAccess;
+
 public class StringDbCache extends DbCache {
 
-	public StringDbCache(String cacheName, String viewName) {
-		super(cacheName, viewName);
+	public StringDbCache(String cacheName, String viewName, CouchDBAccess dbConnection) {
+		super(cacheName, viewName, dbConnection);
 	}
 
 	@Override
@@ -19,15 +21,16 @@ public class StringDbCache extends DbCache {
             ViewResult.Row row = rows.get(i);
             Integer id = Integer.valueOf(row.getValue());
             String key = String.valueOf(row.getKey());
-            
-            Set<Integer> ids = index.get(key);
-             
-            if (ids == null) {
-                ids = new HashSet<Integer>();
-                index.put(key, ids);
+            if(!key.equals("null") && !key.equals("")) {
+	            Set<Integer> ids = index.get(key);
+	             
+	            if (ids == null) {
+	                ids = new HashSet<Integer>();
+	                index.put(key, ids);
+	            }
+	            
+	            ids.add(id);
             }
-            
-            ids.add(id);
         }
 	}
 

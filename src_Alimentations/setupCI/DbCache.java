@@ -18,13 +18,14 @@ import dbAccess.CouchDBAccess;
 public abstract class DbCache {
 	public Map<Object, Set<Integer>> index;
 	protected File dump;
-	protected ApplicationInfo dbInfo;
-	public String viewName;
+	protected String viewName;
+	protected CouchDBAccess dbConnection;
 	
-	public DbCache(String cacheName, String viewName) {
-		dbInfo = ApplicationInfo.getInstance();
+	public DbCache(String cacheName, String viewName, CouchDBAccess dbConnection) {
+		ApplicationInfo dbInfo = ApplicationInfo.getInstance();
 		dump = new File(dbInfo.getCacheDirPath() + System.getProperty("file.separator") + cacheName);
 		this.viewName = viewName;
+		this.dbConnection = dbConnection;
 	}
 	
 	public void loadIndex() {
@@ -50,11 +51,8 @@ public abstract class DbCache {
 	}
 	
 	public void fetchFromDb(String viewName) {
-		CouchDBAccess dataBase = new CouchDBAccess();
-		dataBase.connect(dbInfo.getIp(), dbInfo.getPort(), dbInfo.getDbName());
-		
 		index = new TreeMap<Object, Set<Integer>>();
-        ViewResult result = dataBase.sendQuery("_design/main", viewName);
+        ViewResult result = dbConnection.sendQuery("_design/main", viewName);
         List<ViewResult.Row> rows = result.getRows();
        
         insertResultsIntoIndex(rows);
