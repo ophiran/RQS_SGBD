@@ -44,6 +44,16 @@ public class Start {
 		cacheMapping.loadIndex();
 		indexesMapping.add(cacheMapping);
 		
+		logger.log(Level.INFO, "Loading cache - actors_name");
+		cacheMapping = new StringDbCache("actors_name", "actors_name");
+		cacheMapping.loadIndex();
+		indexesMapping.add(cacheMapping);
+		
+		logger.log(Level.INFO, "Loading cache - directors_name");
+		cacheMapping = new StringDbCache("directors_name", "directors_name");
+		cacheMapping.loadIndex();
+		indexesMapping.add(cacheMapping);
+		
 		if(args.length > 0 && args[0].equalsIgnoreCase("-console")){
 			logger.log(Level.INFO, "Entering in console mode");
 		}
