@@ -61,8 +61,7 @@ public abstract class DbCache {
         
 	}
 	
-	public void insertResultsIntoIndex(List<ViewResult.Row> rows) {
-	}
+	public abstract void insertResultsIntoIndex(List<ViewResult.Row> rows);
 	
 	public void serializeIndex() {
 		try {

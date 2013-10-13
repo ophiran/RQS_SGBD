@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import setupCI.DbCache;
 import setupCI.DoubleDbCache;
+import setupCI.IntegerDbCache;
 
 
 public class Start {
@@ -22,13 +23,13 @@ public class Start {
 		logger = Logger.getLogger("Main logger");
 		indexesMapping = new Vector<>();
 		
-		DbCache cacheVoteAverage = new DoubleDbCache("vote_average", "vote_average");
-		cacheVoteAverage.loadIndex();
-		indexesMapping.add(cacheVoteAverage);
+		DbCache cacheMapping = new DoubleDbCache("vote_average", "vote_average");
+		cacheMapping.loadIndex();
+		indexesMapping.add(cacheMapping);
 		
-		
-		
-		System.out.println(cacheVoteAverage.index.values().size());
+		cacheMapping = new IntegerDbCache("vote_count", "vote_count");
+		cacheMapping.loadIndex();
+		indexesMapping.add(cacheMapping);
 		
 		
 		if(args.length > 0 && args[0].equalsIgnoreCase("-console")){
