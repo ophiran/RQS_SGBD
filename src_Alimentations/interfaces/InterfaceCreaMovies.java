@@ -4,16 +4,9 @@
  */
 package interfaces;
 
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
-
-import javax.swing.JList;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 
 import setupCI.DbCache;
 
