@@ -6,8 +6,14 @@ package interfaces;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 import java.util.Vector;
 
+import org.ektorp.ViewResult;
+
+import dbAccess.CouchDBAccess;
+import searchCI.StringSearch;
+import setupCI.ApplicationInfo;
 import setupCI.DbCache;
 
 /**
@@ -29,14 +35,28 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         }
         
         jComboBoxIndex.addActionListener(this);
+        jButton1.addActionListener(this);
     }
 
     
     @Override
     public void actionPerformed(ActionEvent e) {
-    	if(e.getSource().equals(jComboBoxIndex)){
+    	if(jTabbedPane5.isShowing() && e.getSource().equals(jComboBoxIndex)){
     		if(jComboBoxIndex.getSelectedItem() instanceof DbCache){
     			jListMovies.setListData(((DbCache)jComboBoxIndex.getSelectedItem()).index.entrySet().toArray());
+    		}
+    	}
+    	if(/*jTabbedPane2.isShowing() && */e.getSource().equals(jButton1)){
+    		Set<Integer> test = new StringSearch().searchIndex("Joanna Kerns", indexes.elementAt(5).index);
+    		CouchDBAccess connection = new CouchDBAccess();
+    		connection.connect(ApplicationInfo.getInstance().getIp(), ApplicationInfo.getInstance().getPort(), ApplicationInfo.getInstance().getDbName());
+    		ViewResult view = connection.sendQuery("_design/main","id");
+    		connection.close();
+
+    		
+    		System.out.println(view.getRows().get(1).getValue());
+    		if(view != null){
+        		jListMovies.setListData(view.getRows().toArray());
     		}
     	}
     }
@@ -83,6 +103,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,10 +135,16 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
 
         jTabbedPane5.addTab("Indexes", jPanel1);
 
+        jTextField6.setText("jTextField5");
+
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel7.setText("Genres");
 
+        jTextField7.setText("jTextField3");
+
         jComboBox7.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+
+        jTextField8.setText("jTextField3");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel8.setText("Out before");
@@ -128,16 +155,28 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel10.setText("Out after");
 
+        jTextFieldActeursSearch1.setText("jTextField1");
+
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel11.setText("Actors");
 
+        jTextField9.setText("jTextField1");
+
         jComboBox8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+
+        jTextField10.setText("jTextField2");
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel12.setText("Title");
 
+        jComboBox9.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jComboBox10.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel2.setText("Certification");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Rating");
@@ -150,6 +189,8 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setText("to");
+
+        jButton1.setText("Search");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -195,19 +236,25 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
                                 .addGap(20, 20, 20)
                                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel12)
-                            .addComponent(jTextField9)
-                            .addComponent(jLabel7)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jTextField9)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jComboBox10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 46, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(101, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton1)))))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,8 +304,9 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel5))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addComponent(jLabel5)
+                    .addComponent(jButton1))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jTabbedPane5.addTab("Search", jPanel2);
@@ -290,6 +338,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox10;
     private javax.swing.JComboBox jComboBox7;

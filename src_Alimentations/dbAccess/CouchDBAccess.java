@@ -1,5 +1,7 @@
 package dbAccess;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,8 +54,19 @@ public class CouchDBAccess{
 		}
 	}
 
-	public ViewResult sendQuery(String query) {
-		return null;
+	public ViewResult sendQuery(String docId,Collection<?> keyList) {
+		if(db != null){
+			ViewQuery query = new ViewQuery().allDocs().keys(keyList);
+			return db.queryView(query);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		close();
 	}
 
 }
