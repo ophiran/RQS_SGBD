@@ -29,6 +29,8 @@ public abstract class ThreadSearch extends Thread {
 		}
 	}
 	
+	//mauvais, inutile et surtout horrible
+	//mais vraiment, cest vraiment horrible
 	public final Set<Integer> searchIndex(Object searchObject, Map<Object,Set<Integer>> index) {
 		this.index = new TreeMap<>(index);
 		this.searchObject = searchObject;

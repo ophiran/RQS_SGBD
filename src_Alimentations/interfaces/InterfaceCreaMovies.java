@@ -6,7 +6,9 @@ package interfaces;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.ektorp.ViewResult;
@@ -47,16 +49,33 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		}
     	}
     	if(/*jTabbedPane2.isShowing() && */e.getSource().equals(jButton1)){
-    		Set<Integer> test = new StringSearch().searchIndex("Joanna Kerns", indexes.elementAt(5).index);
+    		
+    		//debug
+    		Set<Integer> actor = new StringSearch().searchIndex("Joanna Kerns", indexes.elementAt(5).index);
+    		
+    		/*
     		CouchDBAccess connection = new CouchDBAccess();
     		connection.connect(ApplicationInfo.getInstance().getIp(), ApplicationInfo.getInstance().getPort(), ApplicationInfo.getInstance().getDbName());
     		ViewResult view = connection.sendQuery("_design/main","id");
-    		connection.close();
+    		connection.close();*/
 
+    		//Get the list of titles
+    		int i = 0;
+    		while(indexes.elementAt(i) != null && !indexes.elementAt(i).toString().equals("title")){
+    			i++;
+    		}
     		
-    		System.out.println(view.getRows().get(1).getValue());
-    		if(view != null){
-        		jListMovies.setListData(view.getRows().toArray());
+    		//Search each titles for the corresponding id
+    		TreeMap<Object,Set<Integer>> copyIndex = new TreeMap();
+    		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
+    			if(actor.containsAll(entry.getValue())) {
+    				copyIndex.put(entry.getKey(),entry.getValue());
+    			}
+    		}
+    		
+    		//put everything in the list
+    		if(copyIndex != null){
+        		jListMovies.setListData(copyIndex.entrySet().toArray());
     		}
     	}
     }
