@@ -84,21 +84,47 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	}
     	if(/*jTabbedPane2.isShowing() && */e.getSource().equals(jButton1)){
     		
-    		String actors = jTextFieldActorsSearch.getText();
-    		String genders = jTextFieldGenderSearch.getText();
-    		double ratingMin = Double.valueOf(jTextFieldRatingMin.getText());
-    		double ratingMax = Double.valueOf(jTextFieldRatingMax.getText());
-    		int voteMin = Integer.valueOf(jTextFieldVoteMin.getText());
-    		int voteMax = Integer.valueOf(jTextFieldVoteMax.getText());
+    		String[] actors;
+    		String[] genders;
+    		double ratingMin = 0d;
+    		double ratingMax = Double.MAX_VALUE;
+    		int voteMin = 0;
+    		int voteMax = Integer.MAX_VALUE;
     		
-    		//debug
-    		Vector<ThreadSearch> searchVector = new Vector<>();
-    		StringTokenizer tokenizer = new StringTokenizer(actors);
-    		while(tokenizer.hasMoreElements()) {
-    			
+    		if(!jTextFieldRatingMin.getText().isEmpty()) {
+    			ratingMin = Double.valueOf(jTextFieldRatingMin.getText());
+    		}
+    		if(!jTextFieldRatingMax.getText().isEmpty()) {
+    			ratingMax = Double.valueOf(jTextFieldRatingMax.getText());
+    		}
+    		if(!jTextFieldVoteMin.getText().isEmpty()) {
+    			voteMin = Integer.valueOf(jTextFieldVoteMin.getText());
+    		}
+    		if(!jTextFieldVoteMax.getText().isEmpty()) {
+    			voteMax = Integer.valueOf(jTextFieldVoteMax.getText());
+    		}
+    		if(!jTextFieldActorsSearch.getText().isEmpty()) {
+        		actors = jTextFieldActorsSearch.getText().split(";");
+    		}
+    		if(!jTextFieldGenderSearch.getText().isEmpty()) {
+    			genders = jTextFieldGenderSearch.getText().split(";");
     		}
     		
-    		Set<Integer> actor = new StringSearch().searchIndex("Steve", indexes.elementAt(5).index);
+    		Vector<ThreadSearch> searchVector = new Vector<>();
+    		/*
+    		for(String actor: actors){
+    			
+    		}*/
+    		
+    		
+    		ThreadSearch actorSearch = new StringSearch("Steve", indexes.elementAt(5).index);
+    		actorSearch.start();
+    		try {
+				actorSearch.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+    		Set<Integer> actor = actorSearch.getResultSet();
     		
 
     		//Get the list of titles

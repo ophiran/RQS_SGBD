@@ -40,10 +40,6 @@ public class Start {
 		
 		ld.dispose();
 		
-		//Vector<Set<Integer>> test2 = new Vector<>();
-		Set<Integer> test = new StringSearch().searchIndex("st", cacheLoader.indexesMapping.elementAt(5).index);
-		
-		//test.run();
 		
 		if(args.length > 0 && args[0].equalsIgnoreCase("-console")){
 			logger.log(Level.INFO, "Entering in console mode");
