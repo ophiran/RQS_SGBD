@@ -13,6 +13,11 @@ public abstract class ThreadSearch extends Thread {
 	Object searchObject;
 	Set<Integer> resultSet;
 	
+	public ThreadSearch(Object searchObject, Map <Object,Set<Integer>> index) {
+		this.index = index;
+		this.searchObject = searchObject;
+	}
+	
 	@Override
 	public final void run() {
 		if(index != null) {
@@ -31,10 +36,15 @@ public abstract class ThreadSearch extends Thread {
 	
 	//mauvais, inutile et surtout horrible
 	//mais vraiment, cest vraiment horrible
+	@Deprecated
 	public final Set<Integer> searchIndex(Object searchObject, Map<Object,Set<Integer>> index) {
 		this.index = new TreeMap<>(index);
 		this.searchObject = searchObject;
 		run();
+		return resultSet;
+	}
+	
+	public final Set<Integer> getResultSet() {
 		return resultSet;
 	}
 	

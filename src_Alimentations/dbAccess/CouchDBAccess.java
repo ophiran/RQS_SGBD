@@ -54,9 +54,9 @@ public class CouchDBAccess{
 		}
 	}
 
-	public ViewResult sendQuery(String docId,Collection<?> keyList) {
+	public ViewResult sendQueryKey(String docId,String key) {
 		if(db != null){
-			ViewQuery query = new ViewQuery().allDocs().keys(keyList);
+			ViewQuery query = new ViewQuery().allDocs().key(key);
 			return db.queryView(query);
 		}
 		else {
