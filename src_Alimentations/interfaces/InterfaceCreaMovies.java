@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -166,7 +167,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			if(indexes.elementAt(i).toString().equals("vote_average") && 
     					(!jTextFieldRatingMin.getText().isEmpty() || !jTextFieldRatingMax.getText().isEmpty())){
     				Set<Integer> setValues = new HashSet<>();
-    				for(Set<Integer> value:((TreeMap<Object,Set<Integer>>)indexes.elementAt(i).index).subMap(voteMin, voteMax).values()){
+    				for(Set<Integer> value:((TreeMap<Object,Set<Integer>>)indexes.elementAt(i).index).subMap(ratingMin, ratingMax).values()){
     					setValues.addAll(value);
     				}
     				searchResult.add(setValues);
