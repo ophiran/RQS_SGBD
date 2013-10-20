@@ -124,6 +124,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	    			if(!actor.isEmpty()) {
     	    				tempThread = new StringSearch(actor, indexes.elementAt(i).index);
     	    				tempThread.start();
+    	    				searchVector.add(tempThread);
     	    			}
     	    		}
     			}
@@ -133,6 +134,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	    			if(!gender.isEmpty()) {
     	    				tempThread = new StringSearch(gender, indexes.elementAt(i).index);
     	    				tempThread.start();
+    	    				searchVector.add(tempThread);
     	    			}
     	    		}
     			}
