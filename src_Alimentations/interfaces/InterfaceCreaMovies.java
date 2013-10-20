@@ -84,8 +84,8 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	}
     	if(/*jTabbedPane2.isShowing() && */e.getSource().equals(jButton1)){
     		
-    		String[] actors;
-    		String[] genders;
+    		String[] actors = {""};
+    		String[] genders = {""};
     		double ratingMin = 0d;
     		double ratingMax = Double.MAX_VALUE;
     		int voteMin = 0;
@@ -110,25 +110,49 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			genders = jTextFieldGenderSearch.getText().split(";");
     		}
     		
+    		
+    		//Threads Creation
     		Vector<ThreadSearch> searchVector = new Vector<>();
-    		/*
-    		for(String actor: actors){
+    		int i = 0;
+    		ThreadSearch tempThread;
+    		while(indexes.elementAt(i) != null){
     			
-    		}*/
+    			if(indexes.elementAt(i).toString().equals("actors_name")){
+    				for(String actor: actors){
+    	    			if(!actor.isEmpty()) {
+    	    				tempThread = new StringSearch(actor, indexes.elementAt(i).index);
+    	    				tempThread.start();
+    	    			}
+    	    		}
+    			}
+    			
+    			if(indexes.elementAt(i).toString().equals("genres_name")){
+    				for(String gender: genders){
+    	    			if(!gender.isEmpty()) {
+    	    				tempThread = new StringSearch(gender, indexes.elementAt(i).index);
+    	    				tempThread.start();
+    	    			}
+    	    		}
+    			}
+    			
+    			i++;
+    		}
     		
     		
-    		ThreadSearch actorSearch = new StringSearch("Steve", indexes.elementAt(5).index);
-    		actorSearch.start();
-    		try {
-				actorSearch.join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
+    		for(ThreadSearch ts : searchVector) {
+    			try {
+    			ts.join();
+    			} catch (InterruptedException ie){
+    				ie.printStackTrace();
+    			}
+    		}
+    		
+    		
     		Set<Integer> actor = actorSearch.getResultSet();
     		
 
     		//Get the list of titles
-    		int i = 0;
+    		i = 0;
     		while(indexes.elementAt(i) != null && !indexes.elementAt(i).toString().equals("title")){
     			i++;
     		}
