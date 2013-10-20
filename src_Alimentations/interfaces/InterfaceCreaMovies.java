@@ -88,6 +88,8 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		
     		String[] actors = {""};
     		String[] genders = {""};
+    		String[] directors = {""};
+    		String title = "";
     		double ratingMin = 0d;
     		double ratingMax = Double.MAX_VALUE;
     		int voteMin = 0;
@@ -105,13 +107,18 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		if(!jTextFieldVoteMax.getText().isEmpty()) {
     			voteMax = Integer.valueOf(jTextFieldVoteMax.getText());
     		}
+    		if(!jTextFieldTitleSearch.getText().isEmpty()) {
+    			title = jTextFieldTitleSearch.getText();
+    		}
     		if(!jTextFieldActorsSearch.getText().isEmpty()) {
         		actors = jTextFieldActorsSearch.getText().split(";");
     		}
     		if(!jTextFieldGenderSearch.getText().isEmpty()) {
     			genders = jTextFieldGenderSearch.getText().split(";");
     		}
-    		
+    		if(!jTextFieldDirectorsSearch.getText().isEmpty()) {
+    			directors = jTextFieldDirectorsSearch.getText().split(";");
+    		}
     		
     		//Threads Creation
     		Vector<ThreadSearch> searchVector = new Vector<>();
@@ -139,6 +146,24 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	    		}
     			}
     			
+    			if(indexes.elementAt(i).toString().equals("directors_name")){
+    				for(String director: directors){
+    	    			if(!director.isEmpty()) {
+    	    				tempThread = new StringSearch(director, indexes.elementAt(i).index);
+    	    				tempThread.start();
+    	    				searchVector.add(tempThread);
+    	    			}
+    	    		}
+    			}
+    			
+    			if(indexes.elementAt(i).toString().equals("title")){
+	    			if(!title.isEmpty()) {
+	    				tempThread = new StringSearch(title, indexes.elementAt(i).index);
+	    				tempThread.start();
+	    				searchVector.add(tempThread);
+	    			}
+    			}
+    			
     			i++;
     		}
     		
@@ -152,8 +177,6 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     				ie.printStackTrace();
     			}
     		}
-    		
-    		
 
     		//Get the list of titles
     		i = 0;
@@ -161,15 +184,12 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			i++;
     		}
     		
-    		//Set<Integer> actor = actorSearch.getResultSet();
-    		
     		for(int j = 1; !searchResult.isEmpty() && j < searchResult.size();j++) {
     			searchResult.elementAt(0).retainAll(searchResult.elementAt(j));
     		}
     		
     		
     		//Search each titles for the corresponding id
-    		
     		TreeMap<Object,Set<Integer>> copyIndex = new TreeMap();
     		if(!searchResult.isEmpty()){
         		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
@@ -217,7 +237,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         jLabel11 = new javax.swing.JLabel();
         jTextFieldTitleSearch = new javax.swing.JTextField();
         jComboBox8 = new javax.swing.JComboBox();
-        jTextFieldRealisatorsSearch = new javax.swing.JTextField();
+        jTextFieldDirectorsSearch = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jComboBox9 = new javax.swing.JComboBox();
         jComboBox10 = new javax.swing.JComboBox();
@@ -278,7 +298,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         jLabel8.setText("Out before");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel9.setText("Realisators");
+        jLabel9.setText("Directors");
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel10.setText("Out after");
@@ -323,7 +343,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
                             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldActorsSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldRealisatorsSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldDirectorsSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -393,7 +413,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldRealisatorsSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldDirectorsSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldGenderSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel8)))
@@ -486,10 +506,10 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextFieldActorsSearch;
+    private javax.swing.JTextField jTextFieldDirectorsSearch;
     private javax.swing.JTextField jTextFieldGenderSearch;
     private javax.swing.JTextField jTextFieldRatingMax;
     private javax.swing.JTextField jTextFieldRatingMin;
-    private javax.swing.JTextField jTextFieldRealisatorsSearch;
     private javax.swing.JTextField jTextFieldTitleSearch;
     private javax.swing.JTextField jTextFieldVoteMax;
     private javax.swing.JTextField jTextFieldVoteMin;

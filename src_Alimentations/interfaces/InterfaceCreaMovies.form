@@ -150,7 +150,7 @@
                                   <Component id="jLabel11" alignment="0" min="-2" pref="78" max="-2" attributes="0"/>
                                   <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldActorsSearch" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jTextFieldRealisatorsSearch" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
+                                  <Component id="jTextFieldDirectorsSearch" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
@@ -241,7 +241,7 @@
                               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jTextFieldRealisatorsSearch" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jTextFieldDirectorsSearch" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldGenderSearch" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -350,7 +350,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="11" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Realisators"/>
+                <Property name="text" type="java.lang.String" value="Directors"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel10">
@@ -411,7 +411,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextFieldRealisatorsSearch">
+            <Component class="javax.swing.JTextField" name="jTextFieldDirectorsSearch">
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel12">
               <Properties>
