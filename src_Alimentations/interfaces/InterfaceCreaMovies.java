@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,7 +117,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		Vector<ThreadSearch> searchVector = new Vector<>();
     		int i = 0;
     		ThreadSearch tempThread;
-    		while(indexes.elementAt(i) != null){
+    		while(i < indexes.size()){
     			
     			if(indexes.elementAt(i).toString().equals("actors_name")){
     				for(String actor: actors){
@@ -138,17 +140,17 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			i++;
     		}
     		
-    		
+
+    		Vector<Set<Integer>> searchResult = new Vector<>();
     		for(ThreadSearch ts : searchVector) {
     			try {
     			ts.join();
+    			searchResult.add(ts.getResultSet());
     			} catch (InterruptedException ie){
     				ie.printStackTrace();
     			}
     		}
     		
-    		
-    		Set<Integer> actor = actorSearch.getResultSet();
     		
 
     		//Get the list of titles
@@ -157,12 +159,25 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			i++;
     		}
     		
+    		//Set<Integer> actor = actorSearch.getResultSet();
+    		
+    		for(int j = 1; !searchResult.isEmpty() && j < searchResult.size();j++) {
+    			searchResult.elementAt(0).retainAll(searchResult.elementAt(j));
+    		}
+    		
+    		
     		//Search each titles for the corresponding id
+    		
     		TreeMap<Object,Set<Integer>> copyIndex = new TreeMap();
-    		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
-    			if(actor.containsAll(entry.getValue())) {
-    				copyIndex.put(entry.getKey(),entry.getValue());
-    			}
+    		if(!searchResult.isEmpty()){
+        		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
+        			if(searchResult.elementAt(0).containsAll(entry.getValue())) {
+        				copyIndex.put(entry.getKey(),entry.getValue());
+        			}
+        		}
+    		}
+    		else {
+    			copyIndex = (TreeMap<Object, Set<Integer>>) indexes.elementAt(i).index;
     		}
     		
     		//put everything in the list
