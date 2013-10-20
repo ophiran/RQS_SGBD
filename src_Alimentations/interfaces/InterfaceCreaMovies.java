@@ -94,6 +94,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		double ratingMax = Double.MAX_VALUE;
     		int voteMin = 0;
     		int voteMax = Integer.MAX_VALUE;
+    		Vector<Set<Integer>> searchResult = new Vector<>();
     		
     		if(!jTextFieldRatingMin.getText().isEmpty()) {
     			ratingMin = Double.valueOf(jTextFieldRatingMin.getText());
@@ -156,19 +157,25 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	    		}
     			}
     			
-    			if(indexes.elementAt(i).toString().equals("title")){
-	    			if(!title.isEmpty()) {
-	    				tempThread = new StringSearch(title, indexes.elementAt(i).index);
-	    				tempThread.start();
-	    				searchVector.add(tempThread);
-	    			}
+    			if(indexes.elementAt(i).toString().equals("title") && !title.isEmpty()){
+    				tempThread = new StringSearch(title, indexes.elementAt(i).index);
+    				tempThread.start();
+    				searchVector.add(tempThread);
+    			}
+    			
+    			if(indexes.elementAt(i).toString().equals("vote_average") && 
+    					(!jTextFieldRatingMin.getText().isEmpty() || !jTextFieldRatingMax.getText().isEmpty())){
+    				Set<Integer> setValues = new HashSet<>();
+    				for(Set<Integer> value:((TreeMap<Object,Set<Integer>>)indexes.elementAt(i).index).subMap(voteMin, voteMax).values()){
+    					setValues.addAll(value);
+    				}
+    				searchResult.add(setValues);
     			}
     			
     			i++;
     		}
     		
 
-    		Vector<Set<Integer>> searchResult = new Vector<>();
     		for(ThreadSearch ts : searchVector) {
     			try {
     			ts.join();
@@ -178,6 +185,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			}
     		}
 
+    		
     		//Get the list of titles
     		i = 0;
     		while(indexes.elementAt(i) != null && !indexes.elementAt(i).toString().equals("title")){
