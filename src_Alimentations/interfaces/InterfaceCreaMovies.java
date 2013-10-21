@@ -23,6 +23,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
@@ -96,11 +97,20 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		String[] genders = {""};
     		String[] directors = {""};
     		String title = "";
+    		String certification = "";
     		double ratingMin = 0d;
     		double ratingMax = Double.MAX_VALUE;
     		int voteMin = 0;
     		int voteMax = Integer.MAX_VALUE;
     		Vector<Set<Integer>> searchResult = new Vector<>();
+    		String aDay = "1";
+    		String aMon = "1";
+    		String aYear = "1800";
+    		String bDay = "31";
+    		String bMon = "12";
+    		String bYear = "5000";
+    		Date afterDate;
+    		Date beforeDate;
     		
     		GregorianCalendar gcStart = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
     		gcStart.clear();
@@ -133,8 +143,43 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		}
     		
     		if(!jTextFieldOutADay.getText().isEmpty()){
-    			
+    			aDay = jTextFieldOutADay.getText();
     		}
+    		if(!jTextFieldOutAMon.getText().isEmpty()){
+    			aMon = jTextFieldOutAMon.getText();
+    		}
+    		if(!jTextFieldOutAYear.getText().isEmpty()){
+    			aYear = jTextFieldOutAYear.getText();
+    		}
+    		if(!jTextFieldOutBDay.getText().isEmpty()){
+    			bDay = jTextFieldOutBDay.getText();
+    		}
+    		if(!jTextFieldOutBMon.getText().isEmpty()){
+    			bMon = jTextFieldOutBMon.getText();
+    		}
+    		if(!jTextFieldOutBYear.getText().isEmpty()){
+    			bYear = jTextFieldOutBYear.getText();
+    		}
+
+    		if(!jTextFieldCertSearch.getText().isEmpty()){
+    			certification = jTextFieldCertSearch.getText();
+    		}
+    		
+    		
+    		try {
+	    		gcStart.set(Integer.valueOf(aYear), Integer.valueOf(aMon) - 1, Integer.valueOf(aDay));
+    		} catch(NumberFormatException nfe){
+    			nfe.printStackTrace();
+    		}
+    		try {
+	    		gcEnd.set(Integer.valueOf(bYear), Integer.valueOf(bMon)-1, Integer.valueOf(bDay));
+    		} catch(NumberFormatException nfe){
+    			nfe.printStackTrace();
+    		}
+    		
+    		
+    		afterDate = new Date(gcStart.getTimeInMillis());
+    		beforeDate = new Date(gcEnd.getTimeInMillis());
     		
     		//Threads Creation
     		Vector<ThreadSearch> searchVector = new Vector<>();
@@ -194,6 +239,25 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     					setValues.addAll(value);
     				}
     				searchResult.add(setValues);
+    			}
+    			
+    			if(indexes.elementAt(i).toString().equals("release_date")){
+    				if(beforeDate.getTime() >= afterDate.getTime()) {
+        				Set<Integer> setValues = new HashSet<>();
+        				for(Set<Integer> value:((TreeMap<Object,Set<Integer>>)indexes.elementAt(i).index).subMap(afterDate, beforeDate).values()){
+        					setValues.addAll(value);
+        				}
+        				searchResult.add(setValues);
+    				}
+    				else {
+    					JOptionPane.showMessageDialog(this, "The starting date must be lower than the end date (now using default date)");
+    				}
+    			}
+    			
+    			if(indexes.elementAt(i).toString().equals("certification") && !certification.isEmpty()){
+    				tempThread = new StringSearch(certification, indexes.elementAt(i).index);
+    				tempThread.start();
+    				searchVector.add(tempThread);
     			}
     			
     			i++;
