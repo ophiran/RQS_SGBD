@@ -64,6 +64,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
 
     //sera pour Alim
     public void actionPerformedWithMouse(MouseEvent e){
+    	
     	/*
     	Entry<Object,Set<Integer>> entry=  (Entry<Object, Set<Integer>>) jListMovies.getSelectedValue();
     	
@@ -289,8 +290,10 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		TreeMap<Object,Set<Integer>> copyIndex = new TreeMap();
     		if(!searchResult.isEmpty()){
         		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
-        			if(searchResult.elementAt(0).containsAll(entry.getValue())) {
-        				copyIndex.put(entry.getKey(),entry.getValue());
+        			for(Integer id: entry.getValue()){
+        				if(searchResult.elementAt(0).contains(id)){
+            				copyIndex.put(entry.getKey(),entry.getValue());
+        				}
         			}
         		}
     		}
