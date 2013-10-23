@@ -52,6 +52,26 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         	jComboBoxIndex.addItem(db);
         }
         
+        int i = 0;
+		while(indexes.elementAt(i) != null && !indexes.elementAt(i).toString().equals("genres_name")){
+			i++;
+		}
+
+        String tooltipText = "<html>" + "Valid movie genders ( separator ; ) : ";
+		for(Map.Entry<Object, Set<Integer>> entry:indexes.elementAt(i).index.entrySet()) {
+			tooltipText += "<br>";
+			tooltipText += entry.getKey();
+		}
+		tooltipText += "</html>";
+		
+        jTextFieldGenderSearch.setToolTipText(tooltipText);
+        
+        tooltipText = "Actors names ( separator ; )";
+        jTextFieldActorsSearch.setToolTipText(tooltipText);
+  
+        tooltipText = "Directors names ( separator ; )";
+        jTextFieldDirectorsSearch.setToolTipText(tooltipText);
+        
         jComboBoxIndex.addActionListener(this);
         jButton1.addActionListener(this);
         jListMovies.addMouseListener(new MouseAdapter(){
@@ -292,7 +312,9 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
         		for(Map.Entry<Object, Set<Integer>> entry : indexes.elementAt(i).index.entrySet()){
         			for(Integer id: entry.getValue()){
         				if(searchResult.elementAt(0).contains(id)){
-            				copyIndex.put(entry.getKey(),entry.getValue());
+        					Set<Integer> temp = new HashSet<>();
+        					temp.add(id);
+            				copyIndex.put(entry.getKey(),temp);
         				}
         			}
         		}
