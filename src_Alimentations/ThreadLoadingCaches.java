@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import setupCI.ApplicationInfo;
+import setupCI.CertifDbCache;
 import setupCI.DateDbCache;
 import setupCI.DbCache;
 import setupCI.DoubleDbCache;
@@ -41,7 +42,7 @@ public class ThreadLoadingCaches extends Thread{
 		indexesMapping.add(cacheMapping);
 		
 		logger.log(Level.INFO, "Loading cache - certification");
-		cacheMapping = new StringDbCache("certification", "certification", dbConnection);
+		cacheMapping = new CertifDbCache("certification", "certification", dbConnection);
 		cacheMapping.loadIndex();
 		indexesMapping.add(cacheMapping);
 		
