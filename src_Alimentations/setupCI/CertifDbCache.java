@@ -1,17 +1,12 @@
 package setupCI;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
@@ -46,6 +41,7 @@ public class CertifDbCache extends DbCache {
 	@Override
 	public void insertResultsIntoIndex(List<Row> rows) {
 		boolean isFound;
+		index.put("", new HashSet<Integer>());
 		for (int i = 0; i < rows.size(); i++) {
             ViewResult.Row row = rows.get(i);
             Integer id = Integer.valueOf(row.getValue());
