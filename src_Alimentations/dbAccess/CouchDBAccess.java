@@ -1,5 +1,9 @@
 package dbAccess;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +60,15 @@ public class CouchDBAccess{
 		if(db != null){
 			ViewQuery query = new ViewQuery().allDocs().key(key);
 			return db.queryView(query);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public Map<String, Object> getDocument(int id) {
+		if(db != null){
+			return db.get(Map.class, String.valueOf(id));
 		}
 		else {
 			return null;
