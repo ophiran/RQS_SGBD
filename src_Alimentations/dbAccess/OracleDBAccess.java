@@ -1,6 +1,5 @@
 package dbAccess;
 
-import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,6 +31,7 @@ public class OracleDBAccess {
 	public Connection getConnection(){
 		return connection;
 	}
+	
 	
 	public synchronized void sendObject(String type,List<Object> object) throws SQLException{
 		sendObject(type, object.toArray());

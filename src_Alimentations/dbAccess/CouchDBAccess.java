@@ -1,7 +1,5 @@
 package dbAccess;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
