@@ -1,0 +1,209 @@
+package alimCB;
+
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+
+public class MovieDocument {
+	private String title;
+	public String overview;
+	private Date released_date;
+	private double vote_average;
+	private int vote_count;
+	private String certification;
+	private Vector<String> actors;
+	private Vector<String> directors;
+	private int runtime;
+	private long nb_copies;
+	private Vector<String> genres;
+	private Vector<String> production_companies;
+	private Vector<Language> spoken_languages;
+	private Vector<Country> production_countries;
+	private BufferedImage poster;// TODO image
+	
+	SortedMap<String, Set<String>> certifEquiv;
+	
+	public MovieDocument(Map<String, Object> rawDocument) {
+		certifEquiv = new TreeMap<>();
+		
+		final String[] certifG = {"G"};
+		final String[] certifPG = {"PG","TV-G"};
+		final String[] certifPG13 = {"PG-13","TV PG"};
+		final String[] certifR = {"R","M","MA"};
+		final String[] certifNC17 = {"NC-17","X","XXX"};
+		
+		certifEquiv.put("G", new HashSet<>(Arrays.asList(certifG)));
+		certifEquiv.put("PG", new HashSet<>(Arrays.asList(certifPG)));
+		certifEquiv.put("PG-13", new HashSet<>(Arrays.asList(certifPG13)));
+		certifEquiv.put("R", new HashSet<>(Arrays.asList(certifR)));
+		certifEquiv.put("NC-17", new HashSet<>(Arrays.asList(certifNC17)));
+		
+		actors = new Vector<String>();
+		directors = new Vector<String>();
+		genres = new Vector<String>();
+		production_companies = new Vector<String>();
+		production_countries = new Vector<Country>();
+		spoken_languages = new Vector<Language>();
+		
+		title = String.valueOf(rawDocument.get("original_title"));
+		overview = String.valueOf(rawDocument.get("overview"));
+		setReleasedDate(String.valueOf(rawDocument.get("release_date")));
+		setVoteAverage(Double.valueOf(rawDocument.get("vote_average").toString()));
+		vote_count = Integer.valueOf(rawDocument.get("vote_count").toString());
+		setCertification(String.valueOf(rawDocument.get("certification")));
+		
+		
+		ArrayList<Map<String, Object>> rawActors = (ArrayList<Map<String, Object>>) rawDocument.get("actors");
+		for(int i = 0; i < rawActors.size(); i++) {
+			actors.add(String.valueOf(rawActors.get(i).get("name")));
+		}
+		
+		ArrayList<Map<String, Object>> rawDirectors = (ArrayList<Map<String, Object>>) rawDocument.get("directors");
+		for(int i = 0; i < rawDirectors.size(); i++) {
+			directors.add(String.valueOf(rawDirectors.get(i).get("name")));
+		}
+		
+		runtime = Integer.valueOf(rawDocument.get("runtime").toString());
+		nb_copies = Math.round(GaussianRandom.random(7.5d, 2d));
+		
+		ArrayList<Map<String, Object>> rawGenres = (ArrayList<Map<String, Object>>) rawDocument.get("genres");
+		for(int i = 0; i < rawGenres.size(); i++) {
+			genres.add(String.valueOf(rawGenres.get(i).get("name")));
+		}
+		
+		ArrayList<Map<String, Object>> rawProdCompanies = (ArrayList<Map<String, Object>>) rawDocument.get("production_companies");
+		for(int i = 0; i < rawProdCompanies.size(); i++) {
+			production_companies.add(String.valueOf(rawProdCompanies.get(i).get("name")));
+		}
+		
+		ArrayList<Map<String, Object>> rawProdCountries = (ArrayList<Map<String, Object>>) rawDocument.get("production_countries");
+		for(int i = 0; i < rawProdCountries.size(); i++) {
+			Country c = new Country(String.valueOf(rawProdCountries.get(i).get("iso_3166_1")),
+									String.valueOf(rawProdCountries.get(i).get("name")));
+			production_countries.add(c);
+		}
+		
+		ArrayList<Map<String, Object>> rawSpokenLang = (ArrayList<Map<String, Object>>) rawDocument.get("spoken_languages");
+		for(int i = 0; i < rawSpokenLang.size(); i++) {
+			Language lang = new Language(String.valueOf(rawSpokenLang.get(i).get("iso_639_1")),
+										 String.valueOf(rawSpokenLang.get(i).get("name")));
+			spoken_languages.add(lang);
+		}
+		
+		setPoster(String.valueOf(rawDocument.get("poster_path")));
+		
+		
+	}
+	
+	public void setReleasedDate(String date) {
+		this.released_date = Date.valueOf(date);
+	}
+	
+	public void setVoteAverage(double vote_average) {
+		if (vote_average < 0.0d || vote_average > 10.0d) {
+			this.vote_average = 5.0d;
+		} else {
+			this.vote_average = vote_average;
+		}
+	}
+	
+
+	public void setCertification(String certification) {
+		this.certification = certification;
+        boolean isFound = false;
+        for(Map.Entry<String, Set<String>> entry : certifEquiv.entrySet()){
+        	for(Object value:entry.getValue().toArray()) {
+        		if(certification.equals((String)value)){
+        			isFound = true;
+        			this.certification = entry.getKey();
+        		}
+        	}
+        }
+        if(!isFound){
+        	this.certification = "UNRATED";
+        }
+	}
+	
+	public void setPoster(String posterPath) {
+		try {
+		    URL url = new URL("http://cf2.imgobject.com/t/p/w185" + posterPath);
+		    poster = ImageIO.read(url);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public String toString() {
+		String ls = System.getProperty("line.separator");
+		String toReturn = "Title : " + title + ls + ls 
+						+ "Overview : " + overview + ls 
+						+ "Release date : " +  released_date.toString() + ls
+						+ "Vote average : " +  String.valueOf(vote_average) + ls
+						+ "Vote count : " +  String.valueOf(vote_count) + ls
+						+ "Certification : " +  certification + ls 
+						+ "Runtime : " +  String.valueOf(runtime) + ls 
+						+ "Number of copies : " +  String.valueOf(nb_copies) + ls;
+		
+		toReturn += ls + "Actors : " + ls;
+		for(String s: actors) {
+			toReturn += s + ls;
+		}
+		
+		toReturn += ls + "Directors : " + ls;
+		for(String s: directors) {
+			toReturn += s + ls;
+		}
+		
+		toReturn += ls + "Production companies : " + ls;
+		for(String s: production_companies) {
+			toReturn += s + ls;
+		}
+		
+		toReturn += ls + "Genres : " + ls;
+		for(String s: genres) {
+			toReturn += s + ls;
+		}
+		
+		toReturn += ls + "Languages : " + ls;
+		for(Language l: spoken_languages) {
+			toReturn += l.toString() + ls;
+		}
+		
+		toReturn += ls + "Production countries : " + ls;
+		for(Country c: production_countries) {
+			toReturn += c.toString() + ls;
+		}
+		
+		return toReturn;
+	}
+	
+	// DEBUG
+	public void diplayImage() {
+		JFrame frame = new JFrame();
+		frame.getContentPane().setLayout(new FlowLayout());
+		frame.getContentPane().add(new JLabel(new ImageIcon(poster)));
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	
+	
+}
