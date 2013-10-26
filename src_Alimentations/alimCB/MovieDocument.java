@@ -232,28 +232,28 @@ public class MovieDocument implements SQLData{
 
 	@Override
 	public String getSQLTypeName() throws SQLException {
-		return typeName;
+		return "MOVIE_T";
 	}
 
 	@Override
 	public void readSQL(SQLInput stream, String typeName) throws SQLException {
 		this.typeName = typeName;
 		title = stream.readString();
-		//overview = stream.readString();
-		//released_date = stream.readDate();
-		//vote_average = stream.readFloat();
-		//vote_count = stream.readInt();
-		//certification = stream.readString();
+		overview = stream.readString();
+		released_date = stream.readDate();
+		vote_average = stream.readFloat();
+		vote_count = stream.readInt();
+		certification = stream.readString();
 	}
 
 	@Override
 	public void writeSQL(SQLOutput stream) throws SQLException {
 		stream.writeString(title);
-		//stream.writeString(overview);
-		//stream.writeDate(released_date);
-		//stream.writeFloat((float)vote_average);
-		//stream.writeInt(vote_count);
-		//stream.writeString(certification);
+		stream.writeString(overview);
+		stream.writeDate(released_date);
+		stream.writeFloat((float)vote_average);
+		stream.writeInt(vote_count);
+		stream.writeString(certification);
 		//stream.writeArray(new ARRAY("languages_t", connection, spoken_languages.toArray()) );
 		//stream.writeBinaryStream(x);
 		
