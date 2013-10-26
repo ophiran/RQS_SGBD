@@ -6,6 +6,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLData;
+import java.sql.SQLException;
+import java.sql.SQLInput;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,13 +25,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-public class MovieDocument {
-	private String title;
-	public String overview;
-	private Date released_date;
+import oracle.sql.ARRAY;
+import oracle.sql.StructDescriptor;
+
+public class MovieDocument implements SQLData{
+	private String title = "";
+	public String overview = "";
+	private Date released_date = new Date(0);
 	private double vote_average;
 	private int vote_count;
-	private String certification;
+	private String certification = "";
 	private Vector<String> actors;
 	private Vector<String> directors;
 	private int runtime;
@@ -38,7 +45,10 @@ public class MovieDocument {
 	private Vector<Country> production_countries;
 	private BufferedImage poster;// TODO image
 	
+	
+	
 	SortedMap<String, Set<String>> certifEquiv;
+	String typeName;
 	
 	public MovieDocument(Map<String, Object> rawDocument) {
 		certifEquiv = new TreeMap<>();
@@ -62,9 +72,21 @@ public class MovieDocument {
 		production_countries = new Vector<Country>();
 		spoken_languages = new Vector<Language>();
 		
-		title = String.valueOf(rawDocument.get("original_title"));
-		overview = String.valueOf(rawDocument.get("overview"));
-		setReleasedDate(String.valueOf(rawDocument.get("release_date")));
+		
+		Object docRaw;
+		
+		docRaw = rawDocument.get("original_title");
+		if(docRaw != null)
+			title = String.valueOf(docRaw);
+		
+		docRaw = rawDocument.get("overview");
+		if(docRaw != null)
+			overview = String.valueOf(rawDocument.get("overview"));
+		
+		docRaw = rawDocument.get("release_date");
+		if(docRaw != null)
+			setReleasedDate(String.valueOf(docRaw));
+		
 		setVoteAverage(Double.valueOf(rawDocument.get("vote_average").toString()));
 		vote_count = Integer.valueOf(rawDocument.get("vote_count").toString());
 		setCertification(String.valueOf(rawDocument.get("certification")));
@@ -80,7 +102,10 @@ public class MovieDocument {
 			directors.add(String.valueOf(rawDirectors.get(i).get("name")));
 		}
 		
-		runtime = Integer.valueOf(rawDocument.get("runtime").toString());
+		docRaw = rawDocument.get("runtime");
+		if(docRaw != null)
+			runtime = Integer.valueOf(docRaw.toString());
+		
 		nb_copies = Math.round(GaussianRandom.random(7.5d, 2d));
 		
 		ArrayList<Map<String, Object>> rawGenres = (ArrayList<Map<String, Object>>) rawDocument.get("genres");
@@ -113,7 +138,8 @@ public class MovieDocument {
 	}
 	
 	public void setReleasedDate(String date) {
-		this.released_date = Date.valueOf(date);
+		if(date != null)
+			this.released_date = Date.valueOf(date);
 	}
 	
 	public void setVoteAverage(double vote_average) {
@@ -202,6 +228,35 @@ public class MovieDocument {
 		frame.getContentPane().add(new JLabel(new ImageIcon(poster)));
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	@Override
+	public String getSQLTypeName() throws SQLException {
+		return typeName;
+	}
+
+	@Override
+	public void readSQL(SQLInput stream, String typeName) throws SQLException {
+		this.typeName = typeName;
+		title = stream.readString();
+		//overview = stream.readString();
+		//released_date = stream.readDate();
+		//vote_average = stream.readFloat();
+		//vote_count = stream.readInt();
+		//certification = stream.readString();
+	}
+
+	@Override
+	public void writeSQL(SQLOutput stream) throws SQLException {
+		stream.writeString(title);
+		//stream.writeString(overview);
+		//stream.writeDate(released_date);
+		//stream.writeFloat((float)vote_average);
+		//stream.writeInt(vote_count);
+		//stream.writeString(certification);
+		//stream.writeArray(new ARRAY("languages_t", connection, spoken_languages.toArray()) );
+		//stream.writeBinaryStream(x);
+		
 	}
 	
 	
