@@ -1,7 +1,6 @@
 package alimCB;
 
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -23,7 +22,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 
 import oracle.sql.ARRAY;
 import oracle.sql.StructDescriptor;
@@ -43,7 +41,7 @@ public class MovieDocument implements SQLData{
 	private Vector<String> production_companies;
 	private Vector<Language> spoken_languages;
 	private Vector<Country> production_countries;
-	private BufferedImage poster;// TODO image
+	private BufferedImage poster;
 	
 	
 	
@@ -172,7 +170,7 @@ public class MovieDocument implements SQLData{
 		    URL url = new URL("http://cf2.imgobject.com/t/p/w185" + posterPath);
 		    poster = ImageIO.read(url);
 		} catch (IOException e) {
-			e.printStackTrace();
+			poster = null;
 		}
 	}
 	
@@ -223,11 +221,13 @@ public class MovieDocument implements SQLData{
 	
 	// DEBUG
 	public void diplayImage() {
+		if (poster != null) {
 		JFrame frame = new JFrame();
-		frame.getContentPane().setLayout(new FlowLayout());
-		frame.getContentPane().add(new JLabel(new ImageIcon(poster)));
-		frame.pack();
-		frame.setVisible(true);
+			frame.getContentPane().setLayout(new FlowLayout());
+			frame.getContentPane().add(new JLabel(new ImageIcon(poster)));
+			frame.pack();
+			frame.setVisible(true);
+		}
 	}
 
 	@Override
