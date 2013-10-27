@@ -338,29 +338,41 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     	if(e.getSource().equals(jButtonAddDB)) {
     		Collection<Map.Entry<Object, Set<Integer>>> listMoviesVect = jListMovies.getSelectedValuesList();
     		Vector<MovieDocument> movieDoc = new Vector<>();
+    		OracleDBAccess dbAccess = null;
+    		
     		
     		if(listMoviesVect.size() > 0){
+    			
+    			try {
+    				dbAccess = new OracleDBAccess();
+					dbAccess.startConnection("@localhost:1521:XE", "BD_CB", "dummy");
+    			} catch (SQLException e2) {
+    				// TODO Auto-generated catch block
+    				e2.printStackTrace();
+    			}
+    			
         		ApplicationInfo dbInfo = ApplicationInfo.getInstance();
         		CouchDBAccess dbConnection = new CouchDBAccess();
         		dbConnection.connect(dbInfo.getIp(), dbInfo.getPort(), dbInfo.getDbName());
         		
         		for(Map.Entry<Object, Set<Integer>> entry: listMoviesVect){
         			for(Integer id:entry.getValue()){
-        				movieDoc.add(new MovieDocument(dbConnection.getDocument(id)));
+        				MovieDocument movieAdd = new MovieDocument(dbConnection.getDocument(id),dbAccess.getConnection());
+        				movieDoc.add(movieAdd);
         			}
         		}
         		
         		dbConnection.close();
-    			
-        		try {
-					OracleDBAccess dbAccess = new OracleDBAccess();
-					dbAccess.startConnection("@localhost:1521:XE", "BD_CB", "dummy");
-					dbAccess.sendObject("MOVIES_T", movieDoc.toArray());
-					dbAccess.stopConnection();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+    			if(dbAccess!=null){
+    				try {
+						dbAccess.sendObject("MOVIES_T", movieDoc.toArray());
+	    				dbAccess.stopConnection();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+    			}
+				
     		}
     	}
     	

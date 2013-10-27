@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import alimCB.Country;
 import alimCB.MovieDocument;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleDriver;
@@ -31,6 +32,7 @@ public class OracleDBAccess {
 		if(typeMap == null){
 			typeMap = connection.getTypeMap();
 			typeMap.put("MOVIE_T",MovieDocument.class);
+			typeMap.put("COUNTRY_T", Country.class);
 			connection.setTypeMap(typeMap);
 		}
 	}
@@ -57,6 +59,7 @@ public class OracleDBAccess {
 	public synchronized void sendObject(String type,Object[] object) throws SQLException{
 		
 		Logger.getGlobal().info("Sending MovieDocument to DB");
+		
 		CallableStatement statement = connection.prepareCall("{call addMovies(?)}");
 		statement.setArray(1, ((OracleConnection)connection).createARRAY(type, object));
 		statement.execute();

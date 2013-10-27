@@ -4,7 +4,9 @@ import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLInput;
@@ -23,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import oracle.jdbc.OracleConnection;
 import oracle.sql.ARRAY;
 import oracle.sql.StructDescriptor;
 
@@ -46,10 +49,12 @@ public class MovieDocument implements SQLData{
 	
 	
 	SortedMap<String, Set<String>> certifEquiv;
+	Connection connection;
 	String typeName;
 	
-	public MovieDocument(Map<String, Object> rawDocument) {
+	public MovieDocument(Map<String, Object> rawDocument,Connection connection) {
 		certifEquiv = new TreeMap<>();
+		this.connection = connection;
 		
 		final String[] certifG = {"G"};
 		final String[] certifPG = {"PG","TV-G"};
@@ -244,6 +249,10 @@ public class MovieDocument implements SQLData{
 		vote_average = stream.readFloat();
 		vote_count = stream.readInt();
 		certification = stream.readString();
+		ResultSet rs = stream.readArray().getResultSet();
+		while(rs.next()){
+			production_countries.add((Country) rs.getObject("country_t"));
+		}
 	}
 
 	@Override
@@ -256,9 +265,12 @@ public class MovieDocument implements SQLData{
 		stream.writeString(certification);
 		//stream.writeArray(new ARRAY("languages_t", connection, spoken_languages.toArray()) );
 		//stream.writeBinaryStream(x);
+		stream.writeArray(((OracleConnection)connection).createARRAY("COUNTRIES_T", production_countries.toArray()));
 		
 	}
 	
-	
+	public void setConnection(Connection connection){
+		this.connection = connection;
+	}
 	
 }
