@@ -275,6 +275,11 @@ public class MovieDocument implements SQLData{
 		while(rs.next()){
 			production_companies.add((String) rs.getString(0));
 		}
+		
+		rs = stream.readArray().getResultSet();
+		while(rs.next()){
+			directors.add((String) rs.getString(0));
+		}
 	}
 
 	@Override
@@ -292,6 +297,7 @@ public class MovieDocument implements SQLData{
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", actors.toArray()));
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", genres.toArray()));
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", production_companies.toArray()));
+		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", directors.toArray()));
 	}
 	
 	public void setConnection(Connection connection){
