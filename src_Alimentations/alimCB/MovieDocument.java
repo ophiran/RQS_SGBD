@@ -251,7 +251,29 @@ public class MovieDocument implements SQLData{
 		certification = stream.readString();
 		ResultSet rs = stream.readArray().getResultSet();
 		while(rs.next()){
+			spoken_languages.add((Language) rs.getObject("LANGUAGE_T"));
+		}
+		
+		rs = stream.readArray().getResultSet();
+		while(rs.next()){
 			production_countries.add((Country) rs.getObject("country_t"));
+		}
+		runtime = stream.readInt();
+		nb_copies = stream.readLong();
+		
+		rs = stream.readArray().getResultSet();
+		while(rs.next()){
+			actors.add((String) rs.getString(0));
+		}
+		
+		rs = stream.readArray().getResultSet();
+		while(rs.next()){
+			genres.add((String) rs.getString(0));
+		}
+		
+		rs = stream.readArray().getResultSet();
+		while(rs.next()){
+			production_companies.add((String) rs.getString(0));
 		}
 	}
 
@@ -263,10 +285,13 @@ public class MovieDocument implements SQLData{
 		stream.writeFloat((float)vote_average);
 		stream.writeInt(vote_count);
 		stream.writeString(certification);
-		//stream.writeArray(new ARRAY("languages_t", connection, spoken_languages.toArray()) );
-		//stream.writeBinaryStream(x);
+		stream.writeArray(((OracleConnection)connection).createARRAY("LANGUAGES_T", spoken_languages.toArray()));
 		stream.writeArray(((OracleConnection)connection).createARRAY("COUNTRIES_T", production_countries.toArray()));
-		
+		stream.writeInt(runtime);
+		stream.writeInt((int) nb_copies);
+		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", actors.toArray()));
+		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", genres.toArray()));
+		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", production_companies.toArray()));
 	}
 	
 	public void setConnection(Connection connection){
