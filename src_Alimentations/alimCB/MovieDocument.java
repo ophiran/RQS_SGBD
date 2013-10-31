@@ -1,9 +1,18 @@
 package alimCB;
 
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -25,9 +34,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import oracle.jdbc.OracleConnection;
-import oracle.sql.ARRAY;
-import oracle.sql.StructDescriptor;
+import oracle.sql.BLOB;
 
 public class MovieDocument implements SQLData{
 	private String title = "";
@@ -45,7 +56,7 @@ public class MovieDocument implements SQLData{
 	private Vector<Language> spoken_languages;
 	private Vector<Country> production_countries;
 	private BufferedImage poster;
-	
+	private URL posterUrl;
 	
 	
 	SortedMap<String, Set<String>> certifEquiv;
@@ -78,17 +89,19 @@ public class MovieDocument implements SQLData{
 		
 		Object docRaw;
 		
-		docRaw = rawDocument.get("original_title");
+		docRaw = rawDocument.get("title");
 		if(docRaw != null)
 			title = String.valueOf(docRaw);
 		
 		docRaw = rawDocument.get("overview");
-		if(docRaw != null)
+		if(docRaw != null){
 			overview = String.valueOf(rawDocument.get("overview"));
+			if(overview.length() > 100) {
+				overview = overview.substring(0, 100);
+			}
+		}
 		
-		docRaw = rawDocument.get("release_date");
-		if(docRaw != null)
-			setReleasedDate(String.valueOf(docRaw));
+		setReleasedDate(String.valueOf(rawDocument.get("release_date")));
 		
 		setVoteAverage(Double.valueOf(rawDocument.get("vote_average").toString()));
 		vote_count = Integer.valueOf(rawDocument.get("vote_count").toString());
@@ -96,13 +109,17 @@ public class MovieDocument implements SQLData{
 		
 		
 		ArrayList<Map<String, Object>> rawActors = (ArrayList<Map<String, Object>>) rawDocument.get("actors");
-		for(int i = 0; i < rawActors.size(); i++) {
-			actors.add(String.valueOf(rawActors.get(i).get("name")));
+		if(rawActors != null) {
+			for(int i = 0; i < rawActors.size(); i++) {
+				actors.add(String.valueOf(rawActors.get(i).get("name")));
+			}
 		}
 		
 		ArrayList<Map<String, Object>> rawDirectors = (ArrayList<Map<String, Object>>) rawDocument.get("directors");
-		for(int i = 0; i < rawDirectors.size(); i++) {
-			directors.add(String.valueOf(rawDirectors.get(i).get("name")));
+		if(rawDirectors != null) {
+			for(int i = 0; i < rawDirectors.size(); i++) {
+				directors.add(String.valueOf(rawDirectors.get(i).get("name")));
+			}
 		}
 		
 		docRaw = rawDocument.get("runtime");
@@ -112,27 +129,35 @@ public class MovieDocument implements SQLData{
 		nb_copies = Math.round(GaussianRandom.random(7.5d, 2d));
 		
 		ArrayList<Map<String, Object>> rawGenres = (ArrayList<Map<String, Object>>) rawDocument.get("genres");
-		for(int i = 0; i < rawGenres.size(); i++) {
-			genres.add(String.valueOf(rawGenres.get(i).get("name")));
+		if(rawGenres != null) {
+			for(int i = 0; i < rawGenres.size(); i++) {
+				genres.add(String.valueOf(rawGenres.get(i).get("name")));
+			}
 		}
 		
 		ArrayList<Map<String, Object>> rawProdCompanies = (ArrayList<Map<String, Object>>) rawDocument.get("production_companies");
-		for(int i = 0; i < rawProdCompanies.size(); i++) {
-			production_companies.add(String.valueOf(rawProdCompanies.get(i).get("name")));
+		if(rawProdCompanies != null) {
+			for(int i = 0; i < rawProdCompanies.size(); i++) {
+				production_companies.add(String.valueOf(rawProdCompanies.get(i).get("name")));
+			}
 		}
 		
 		ArrayList<Map<String, Object>> rawProdCountries = (ArrayList<Map<String, Object>>) rawDocument.get("production_countries");
-		for(int i = 0; i < rawProdCountries.size(); i++) {
-			Country c = new Country(String.valueOf(rawProdCountries.get(i).get("iso_3166_1")),
-									String.valueOf(rawProdCountries.get(i).get("name")));
-			production_countries.add(c);
+		if(rawProdCountries != null) {
+			for(int i = 0; i < rawProdCountries.size(); i++) {
+				Country c = new Country(String.valueOf(rawProdCountries.get(i).get("iso_3166_1")),
+										String.valueOf(rawProdCountries.get(i).get("name")));
+				production_countries.add(c);
+			}
 		}
 		
 		ArrayList<Map<String, Object>> rawSpokenLang = (ArrayList<Map<String, Object>>) rawDocument.get("spoken_languages");
-		for(int i = 0; i < rawSpokenLang.size(); i++) {
-			Language lang = new Language(String.valueOf(rawSpokenLang.get(i).get("iso_639_1")),
-										 String.valueOf(rawSpokenLang.get(i).get("name")));
-			spoken_languages.add(lang);
+		if(rawSpokenLang != null) {
+			for(int i = 0; i < rawSpokenLang.size(); i++) {
+				Language lang = new Language(String.valueOf(rawSpokenLang.get(i).get("iso_639_1")),
+											 String.valueOf(rawSpokenLang.get(i).get("name")));
+				spoken_languages.add(lang);
+			}
 		}
 		
 		setPoster(String.valueOf(rawDocument.get("poster_path")));
@@ -141,8 +166,10 @@ public class MovieDocument implements SQLData{
 	}
 	
 	public void setReleasedDate(String date) {
-		if(date != null)
+		if(date != null && date.matches("\\d{4}-\\d{2}-\\d{2}"))
 			this.released_date = Date.valueOf(date);
+		else
+			this.released_date = Date.valueOf("1970-01-01");
 	}
 	
 	public void setVoteAverage(double vote_average) {
@@ -172,10 +199,12 @@ public class MovieDocument implements SQLData{
 	
 	public void setPoster(String posterPath) {
 		try {
-		    URL url = new URL("http://cf2.imgobject.com/t/p/w185" + posterPath);
-		    poster = ImageIO.read(url);
+		    posterUrl = new URL("http://cf2.imgobject.com/t/p/w185" + posterPath);
+		    poster = ImageIO.read(posterUrl);
+		    
 		} catch (IOException e) {
 			poster = null;
+			posterUrl = null;
 		}
 	}
 	
@@ -244,7 +273,7 @@ public class MovieDocument implements SQLData{
 	public void readSQL(SQLInput stream, String typeName) throws SQLException {
 		this.typeName = typeName;
 		title = stream.readString();
-		overview = stream.readString();
+		overview = stream.readNString();
 		released_date = stream.readDate();
 		vote_average = stream.readFloat();
 		vote_count = stream.readInt();
@@ -285,7 +314,7 @@ public class MovieDocument implements SQLData{
 	@Override
 	public void writeSQL(SQLOutput stream) throws SQLException {
 		stream.writeString(title);
-		stream.writeString(overview);
+		stream.writeNString(overview);
 		stream.writeDate(released_date);
 		stream.writeFloat((float)vote_average);
 		stream.writeInt(vote_count);
@@ -298,6 +327,21 @@ public class MovieDocument implements SQLData{
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", genres.toArray()));
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", production_companies.toArray()));
 		stream.writeArray(((OracleConnection)connection).createARRAY("ARRAY_STRING", directors.toArray()));
+		
+		Blob blob = ((OracleConnection)connection).createBlob();
+		if(posterUrl != null){
+			try {
+				FileInputStream fis = new FileInputStream(FileUtils.toFile(posterUrl));
+				OutputStream os = blob.setBinaryStream(0);
+				IOUtils.copy(fis, os);
+				fis.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		stream.writeBlob(blob);
 	}
 	
 	public void setConnection(Connection connection){
