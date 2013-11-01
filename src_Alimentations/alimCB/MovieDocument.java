@@ -331,10 +331,10 @@ public class MovieDocument implements SQLData{
 		Blob blob = ((OracleConnection)connection).createBlob();
 		if(posterUrl != null){
 			try {
-				FileInputStream fis = new FileInputStream(FileUtils.toFile(posterUrl));
+				Raster raster = poster.getData();
+				DataBufferByte byteBuffer = (DataBufferByte) raster.getDataBuffer();
 				OutputStream os = blob.setBinaryStream(0);
-				IOUtils.copy(fis, os);
-				fis.close();
+				os.write(byteBuffer.getData());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
