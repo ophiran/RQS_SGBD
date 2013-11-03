@@ -139,6 +139,7 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     		String bYear = "5000";
     		Date afterDate;
     		Date beforeDate;
+    		Set<Integer> movieIds = null;
     		
     		GregorianCalendar gcStart = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
     		gcStart.clear();
@@ -191,6 +192,14 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
 
     		if(jComboBox1.getSelectedItem() != ""){
     			certification = (String)jComboBox1.getSelectedItem();
+    		}
+    		
+    		if(!jTextFieldId.getText().isEmpty()){
+    			movieIds = new HashSet<>();
+    			String[] idsTemp = jTextFieldId.getText().split(";");
+    			for(String id : idsTemp){
+    				movieIds.add(Integer.valueOf(id));
+    			}
     		}
     		
     		
@@ -312,6 +321,9 @@ public class InterfaceCreaMovies extends javax.swing.JFrame implements ActionLis
     			searchResult.elementAt(0).retainAll(searchResult.elementAt(j));
     		}
     		
+    		if(movieIds != null){
+    			searchResult.elementAt(0).retainAll(movieIds);
+    		}
     		
     		//Search each titles for the corresponding id
     		TreeMap<Object,Set<Integer>> copyIndex = new TreeMap();
