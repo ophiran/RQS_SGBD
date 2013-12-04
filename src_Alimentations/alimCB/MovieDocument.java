@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -331,10 +333,16 @@ public class MovieDocument implements SQLData{
 		Blob blob = ((OracleConnection)connection).createBlob();
 		if(posterUrl != null){
 			try {
-				Raster raster = poster.getData();
-				DataBufferByte byteBuffer = (DataBufferByte) raster.getDataBuffer();
+				//Raster raster = poster.getData();
+				//DataBufferByte byteBuffer = (DataBufferByte) raster.getDataBuffer();
 				OutputStream os = blob.setBinaryStream(0);
-				os.write(byteBuffer.getData());
+				//os.write(byteBuffer.getData());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ImageIO.write(poster, "jpg", baos);
+				baos.flush();
+				os.write(baos.toByteArray());
+				os.flush();
+				
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

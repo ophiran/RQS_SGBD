@@ -23,7 +23,7 @@ public class DoubleDbCache extends DbCache{
             Double rating = Double.valueOf(row.getKey());
             
             Set<Integer> ids = index.get(rating);
-             
+
             if (ids == null) {
                 ids = new HashSet<Integer>();
                 index.put(rating, ids);
